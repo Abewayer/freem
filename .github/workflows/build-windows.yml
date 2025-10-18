@@ -1,31 +1,50 @@
-name: Build Windows EXE
+name: Build Windows EXE (Qt + MinGW)
 
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: {}
 
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Qt
+      - name: Install Qt 5.15.2 MinGW (con QtCharts)
         uses: jurplel/install-qt-action@v4
         with:
           version: '5.15.2'
           host: 'windows'
           target: 'desktop'
           arch: 'win64_mingw81'
+          modules: 'qtcharts'
 
-      - name: Build project
+      - name: Show Qt info
+        shell: bash
         run: |
-          qmake freeM.pro
-          mingw32-make release
+          qmake -v
+          where qmake
+          where mingw32-make
+          where windeployqt
 
-      - name: Upload EXE
-        uses: actions/upload-artifact@v3
+      - name: Build progetto
+        run: |
+          qmake freeM.pro "CONFIG+=release"
+          mingw32-make -j4
+
+      - name: Prepara cartella portabile
+        shell: bash
+        run: |
+          mkdir -p dist
+          copy release\\freeM.exe dist\\freeM.exe
+          windeployqt --release --compiler-runtime --no-angle --dir dist dist\\freeM.exe
+
+      - name: Carica artifact (EXE + DLL)
+        uses: actions/upload-artifact@v4
         with:
-          name: freeM-exe
-          path: release/
+          name: freeM-windows-portable
+          path: dist/
+          if-no-files-found: error
