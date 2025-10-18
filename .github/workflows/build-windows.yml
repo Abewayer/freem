@@ -30,11 +30,13 @@ jobs:
           where mingw32-make
           where windeployqt
 
-      - name: Build progetto
+      - name: Build progetto (dettagliato)
         working-directory: ${{ github.workspace }}
         run: |
-          qmake freeM.pro "CONFIG+=release"
-          mingw32-make -j4
+        qmake freeM.pro "CONFIG+=release"
+        echo "==== COMPILAZIONE DETTAGLIATA ===="
+        mingw32-make -j1 VERBOSE=1 || echo "Compilazione fallita, mostrando log completo:" && type Makefile.Release
+
 
 
       - name: Prepara cartella portabile
