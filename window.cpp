@@ -99,7 +99,7 @@ Window::Window(QWidget *parent)
 
     setStyleSheet("background-color: #222;");
 }
-
+//Finestra
 Window::~Window() {}
 
 void Window::updateMemoryInfo()
