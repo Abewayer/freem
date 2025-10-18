@@ -31,9 +31,11 @@ jobs:
           where windeployqt
 
       - name: Build progetto
+        working-directory: ${{ github.workspace }}
         run: |
           qmake freeM.pro "CONFIG+=release"
           mingw32-make -j4
+
 
       - name: Prepara cartella portabile
         shell: bash
