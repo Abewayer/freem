@@ -1,6 +1,6 @@
 #include <QApplication>
 #include "window.h"
-//Test
+//Test exe
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
